@@ -14,14 +14,10 @@ public class Task {
         this.status = status;
     }
 
-    public Task(String title, String description) {
+    public Task(String title, String description, Status status) {
         this.title = title;
         this.description = description;
-    }
-    public Task(String title, String description, int id) {
-        this.title = title;
-        this.description = description;
-        this.id = id;
+        this.status = status;
     }
 
     public String getTitle() {
@@ -66,7 +62,7 @@ public class Task {
         String result = "Задание {" +
                 "title='" + title + '\'';
 
-        if(description != null) {
+        if (description != null) {
             result = result + ", description.length=" + description.length();
         } else {
             result = result + ", description=null";
