@@ -3,11 +3,11 @@ public class Epic extends Task {
     private ArrayList<Integer> subTasksIds = new ArrayList<>();
 
 
-    public Epic(String title, String description, int id, Status status) {
+    public Epic(String title, String description, int id) {
         super(title, description, id, Status.NEW);
     }
 
-    public Epic(String title, String description, Status status) {
+    public Epic(String title, String description) {
         super(title, description, Status.NEW);
 
     }
