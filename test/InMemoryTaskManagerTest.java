@@ -1,7 +1,10 @@
+import Manager.Managers;
+import Manager.TaskManager;
+import Task.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
-import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -34,7 +37,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void addEpicAndSubtask() {
-        Epic epic = new Epic("Epic for test", "Its description");
+        Epic epic = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic);
         Subtask subtask1 = new Subtask("First subtask of test epic", "Its description", Status.NEW, epic.getId());
         taskManager.add(subtask1);
@@ -69,19 +72,19 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldNotAddEpicAsSubtask() {
-        Epic epic1 = new Epic("Epic for test", "Its description");
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic1);
         Epic epic2 = new Epic("One more epic for test", "Wow description", epic1.getId());
         taskManager.add(epic2);
 
-        final ArrayList<Integer> subtasksIds = epic1.getSubTasksIds();
+        final List<Integer> subtasksIds = epic1.getSubTasksIds();
 
         assertTrue(subtasksIds.isEmpty(), "Задачи у эпика есть");
     }
 
     @Test
     void shouldNotAddSubtaskAsEpic() {
-        Epic epic = new Epic("Epic for test", "Its description");
+        Epic epic = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic);
 
     }
@@ -98,7 +101,7 @@ class InMemoryTaskManagerTest {
         assertEquals(2, allTasks1.size(), "Неверное количество задач.");
         assertEquals(task1, taskManager.getTaskById(task1.getId()), "Задачи не совпадают");
 
-        Task task3 = new Task("Task for update", "Updated first task", task1.getId(), Status.NEW);
+        Task task3 = new Task("Task.Task for update", "Updated first task", task1.getId(), Status.NEW);
         taskManager.update(task3);
 
         final Task savedTask = taskManager.getTaskById(task3.getId());
@@ -123,7 +126,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldReturnSubtasksOfEpic() {
-        Epic epic1 = new Epic("Epic for test", "Its description");
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic1);
         Subtask subtask1 = new Subtask("Test subtask", "And description", Status.NEW, epic1.getId());
         taskManager.add(subtask1);
@@ -133,7 +136,7 @@ class InMemoryTaskManagerTest {
         taskManager.add(epic2);
         Subtask subtask3 = new Subtask("Task", "Does not belong to epic", Status.NEW, epic2.getId());
         taskManager.add(subtask3);
-        ArrayList<Subtask> subtasksOfEpic = taskManager.getSubtasksOfEpic(epic1.getId());
+        List<Subtask> subtasksOfEpic = taskManager.getSubtasksOfEpic(epic1.getId());
 
         assertNotNull(subtasksOfEpic, "Не возвращает задачи эпика");
         assertEquals(2, subtasksOfEpic.size(), "Возвращает неверное количество задач");
@@ -155,7 +158,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldReturnEmptyListOfEpicsAfterRemoval() {
-        Epic epic1 = new Epic("Epic for test", "Its description");
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic1);
         Epic epic2 = new Epic("Epic2 for test", "Its description");
         taskManager.add(epic2);
@@ -166,7 +169,7 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldReturnEmptyListOfSubtasksAfterRemoval() {
-        Epic epic1 = new Epic("Epic for test", "Its description");
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic1);
         Subtask subtask1 = new Subtask("Test subtask", "And description", Status.NEW, epic1.getId());
         taskManager.add(subtask1);
@@ -185,7 +188,7 @@ class InMemoryTaskManagerTest {
         Task task2 = new Task("One more test task", "Description", task1.getId(), Status.NEW);
         taskManager.update(task2);
 
-        ArrayList<Task> allTasks = taskManager.getAllTasks();
+        List<Task> allTasks = taskManager.getAllTasks();
 
         assertEquals(1, allTasks.size(), "Задача не обновилась, а добавилась");
         assertEquals(task2.getTitle(), allTasks.getFirst().getTitle(), "Задача не обновилась");
@@ -194,12 +197,12 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldUpdateAnOldEpic() {
-        Epic epic1 = new Epic("Epic for test", "Its description");
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic1);
         Epic epic2 = new Epic("Epic2 for test", "Its description", epic1.getId());
         taskManager.update(epic2);
 
-        ArrayList<Epic> allEpics = taskManager.getAllEpics();
+        List<Epic> allEpics = taskManager.getAllEpics();
 
         assertEquals(1, allEpics.size(), "Эпик не обновился, а добавился");
         assertEquals(epic2.getTitle(), allEpics.getFirst().getTitle(), "Эпик не обновился");
@@ -208,14 +211,14 @@ class InMemoryTaskManagerTest {
 
     @Test
     void shouldUpdateAnOldSubtask() {
-        Epic epic1 = new Epic("Epic for test", "Its description");
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic1);
         Subtask subtask1 = new Subtask("Test subtask", "And description", Status.NEW, epic1.getId());
         taskManager.add(subtask1);
         Subtask subtask2 = new Subtask("One more test subtask", "Description", subtask1.getId(), Status.NEW, epic1.getId());
         taskManager.update(subtask2);
 
-        ArrayList<Subtask> allSubtasks = taskManager.getAllSubtasks();
+        List<Subtask> allSubtasks = taskManager.getAllSubtasks();
 
         assertEquals(1, allSubtasks.size(), "Эпик не обновился, а добавился");
         assertEquals(subtask2.getTitle(), allSubtasks.getFirst().getTitle(), "Эпик не обновился");
@@ -226,34 +229,34 @@ class InMemoryTaskManagerTest {
     void shouldRemoveTaskById() {
         Task task1 = new Task("Test task", "And description", Status.NEW);
         taskManager.add(task1);
-        ArrayList<Task> tasksBeforeRemoval = taskManager.getAllTasks();
+        List<Task> tasksBeforeRemoval = taskManager.getAllTasks();
         assertNotNull(tasksBeforeRemoval, "Задача не добавилась");
         taskManager.removeTaskById(task1.getId());
-        ArrayList<Task> tasksAfterRemoval = taskManager.getAllTasks();
+        List<Task> tasksAfterRemoval = taskManager.getAllTasks();
         assertTrue(tasksAfterRemoval.isEmpty(), "Удалить задачу не удалось");
     }
 
     @Test
     void shouldRemoveEpicById() {
-        Epic epic1 = new Epic("Epic for test", "Its description");
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic1);
-        ArrayList<Epic> epicsBeforeRemoval = taskManager.getAllEpics();
+        List<Epic> epicsBeforeRemoval = taskManager.getAllEpics();
         assertNotNull(epicsBeforeRemoval, "Эпик не добавился");
         taskManager.removeEpicById(epic1.getId());
-        ArrayList<Epic> epicsAfterRemoval = taskManager.getAllEpics();
+        List<Epic> epicsAfterRemoval = taskManager.getAllEpics();
         assertTrue(epicsAfterRemoval.isEmpty(), "Удалить эпик не удалось");
     }
 
     @Test
     void shouldRemoveSubtaskById() {
-        Epic epic1 = new Epic("Epic for test", "Its description");
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic1);
         Subtask subtask1 = new Subtask("Test subtask", "And description", Status.NEW, epic1.getId());
         taskManager.add(subtask1);
-        ArrayList<Subtask> subtasksBeforeRemoval = taskManager.getAllSubtasks();
+        List<Subtask> subtasksBeforeRemoval = taskManager.getAllSubtasks();
         assertNotNull(subtasksBeforeRemoval, "Подзадача не добавилась");
         taskManager.removeSubtaskById(subtask1.getId());
-        ArrayList<Subtask> subtasksAfterRemoval = taskManager.getAllSubtasks();
+        List<Subtask> subtasksAfterRemoval = taskManager.getAllSubtasks();
         assertTrue(subtasksAfterRemoval.isEmpty(), "Удалить подзадачу не удалось");
     }
 }

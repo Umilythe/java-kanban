@@ -1,4 +1,6 @@
-import java.util.ArrayList;
+import Manager.Managers;
+import Manager.TaskManager;
+import Task.*;
 
 public class Main {
 
@@ -7,7 +9,7 @@ public class Main {
         TaskManager taskManager = Managers.getDefault();
         System.out.println("Поехали!");
         Task task1 = new Task("Уборка", "Влажная уборка комнат, разобрать шакаф", Status.NEW);
-        //TaskManager taskManager = new InMemoryTaskManager();
+        //Manager.TaskManager taskManager = new Manager.InMemoryTaskManager();
         taskManager.add(task1);
         Task task2 = new Task("Стирка", "Цветных вещей", Status.NEW);
         taskManager.add(task2);
@@ -34,10 +36,6 @@ public class Main {
 
        Task task4 = new Task("123", "456", 1, Status.NEW);
        taskManager.update(task4);
-
-
-
-
 
         taskManager.getTaskById(2);
         taskManager.getEpicById(3);

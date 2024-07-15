@@ -1,7 +1,9 @@
+import Manager.Managers;
+import Manager.TaskManager;
+import Task.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +42,7 @@ class InMemoryHistoryManagerTest {
 
 @Test
     void shouldAddAnyTypeToHistory() {
-    Epic epic = new Epic("Epic for test", "Its description");
+    Epic epic = new Epic("Task.Task.Epic for test", "Its description");
     taskManager.add(epic);
     taskManager.getEpicById(epic.getId());
     Subtask subtask1 = new Subtask("First subtask of test epic", "Its description", Status.NEW, epic.getId());
@@ -50,7 +52,7 @@ class InMemoryHistoryManagerTest {
     taskManager.add(task1);
     taskManager.getTaskById(task1.getId());
 
-    ArrayList<Task> historyList = taskManager.getHistory();
+    List<Task> historyList = taskManager.getHistory();
     assertEquals(3, historyList.size());
     assertEquals(epic, historyList.getFirst());
     assertEquals(subtask1, historyList.get(1));
