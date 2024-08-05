@@ -9,7 +9,6 @@ public class Main {
         TaskManager taskManager = Managers.getDefault();
         System.out.println("Поехали!");
         Task task1 = new Task("Уборка", "Влажная уборка комнат, разобрать шакаф", Status.NEW);
-        //Manager.TaskManager taskManager = new Manager.InMemoryTaskManager();
         taskManager.add(task1);
         Task task2 = new Task("Стирка", "Цветных вещей", Status.NEW);
         taskManager.add(task2);
@@ -34,9 +33,10 @@ public class Main {
         Subtask subtask4 = new Subtask("Сделать чертеж", "В autocad", Status.IN_PROGRESS, epic1.getId());
         taskManager.add(subtask4);
 
-       Task task4 = new Task("123", "456", 1, Status.NEW);
-       taskManager.update(task4);
+        Task task4 = new Task("123", "456", 1, Status.NEW);
+        taskManager.update(task4);
 
+        taskManager.removeTaskById(task2.getId());
         taskManager.getTaskById(2);
         taskManager.getEpicById(3);
         taskManager.getEpicById(3);
@@ -48,9 +48,10 @@ public class Main {
         taskManager.getTaskById(8);
         taskManager.getSubtaskById(9);
         taskManager.getTaskById(task4.getId());
-
+        taskManager.removeEpicById(epic1.getId());
         printAllTasks(taskManager);
     }
+
     private static void printAllTasks(TaskManager manager) {
         System.out.println("Задачи:");
         for (Task task : manager.getAllTasks()) {
