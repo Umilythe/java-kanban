@@ -3,6 +3,8 @@ import Manager.TaskManager;
 import Task.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -258,5 +260,35 @@ class InMemoryTaskManagerTest {
         taskManager.removeSubtaskById(subtask1.getId());
         List<Subtask> subtasksAfterRemoval = taskManager.getAllSubtasks();
         assertTrue(subtasksAfterRemoval.isEmpty(), "Удалить подзадачу не удалось");
+    }
+
+    @Test
+    void shouldNotStoreOldIdOfRemovedTask() {
+        Task task1 = new Task("Test task", "And description", Status.NEW);
+        taskManager.add(task1);
+        taskManager.removeTaskById(task1.getId());
+        Task task2 = new Task("One more test task", "Description", 2, Status.NEW);
+        taskManager.add(task2);
+
+        assertNotEquals(task1.getId(), task2.getId(), "ID совпадают");
+    }
+
+    @Test
+    void shouldNotStoreRemovedIDsInsideEpic() {
+        Epic epic1 = new Epic("Task.Task.Epic for test", "Its description");
+        taskManager.add(epic1);
+        Subtask subtask1 = new Subtask("Test subtask", "And description", Status.NEW, epic1.getId());
+        taskManager.add(subtask1);
+        Subtask subtask2 = new Subtask("One more test subtask", "Description", Status.NEW, epic1.getId());
+        taskManager.add(subtask2);
+
+        ArrayList<Integer> idsOfSubtasks = epic1.getSubTasksIds();
+        assertEquals(2, idsOfSubtasks.size(), "Подзадачи не сохранились");
+
+        taskManager.removeSubtaskById(subtask1.getId());
+        ArrayList<Integer> idsOfSubtasksAfterRemoval = epic1.getSubTasksIds();
+        assertEquals(1, idsOfSubtasksAfterRemoval.size(), "Подзадача не удалилась.");
+        assertEquals(subtask2.getId(), idsOfSubtasksAfterRemoval.getFirst());
+        assertNotEquals(subtask1.getId(), idsOfSubtasksAfterRemoval.getFirst());
     }
 }
