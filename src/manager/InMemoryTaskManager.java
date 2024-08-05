@@ -1,8 +1,6 @@
-package Manager;
+package manager;
 
-import Manager.HistoryManager;
-import Manager.TaskManager;
-import Task.*;
+import task.*;
 
 
 import java.util.ArrayList;

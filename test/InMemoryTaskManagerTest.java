@@ -1,6 +1,6 @@
-import Manager.Managers;
-import Manager.TaskManager;
-import Task.*;
+import manager.Managers;
+import manager.TaskManager;
+import task.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -136,7 +136,7 @@ class InMemoryTaskManagerTest {
         taskManager.add(subtask2);
         Epic epic2 = new Epic("Epic2 for test", "Its description");
         taskManager.add(epic2);
-        Subtask subtask3 = new Subtask("Task", "Does not belong to epic", Status.NEW, epic2.getId());
+        Subtask subtask3 = new Subtask("task", "Does not belong to epic", Status.NEW, epic2.getId());
         taskManager.add(subtask3);
         List<Subtask> subtasksOfEpic = taskManager.getSubtasksOfEpic(epic1.getId());
 
@@ -151,7 +151,7 @@ class InMemoryTaskManagerTest {
         taskManager.add(task1);
         Task task2 = new Task("One more test task", "Description", Status.NEW);
         taskManager.add(task2);
-        Task task3 = new Task("Task ", "Something about description", Status.NEW);
+        Task task3 = new Task("task ", "Something about description", Status.NEW);
         taskManager.add(task3);
 
         taskManager.removeAllTasks();
