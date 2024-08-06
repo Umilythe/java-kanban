@@ -1,6 +1,5 @@
 package manager;
 
-import manager.HistoryManager;
 import task.Task;
 
 import java.util.HashMap;
@@ -29,7 +28,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
 
-    public void removeNode(Node<Task> node) {
+    private void removeNode(Node<Task> node) {
         if (node != null) {
             final Node<Task> nodeAfter = node.getNext();
             final Node<Task> nodeBefore = node.getPrevious();
@@ -55,11 +54,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         return getTasks();
     }
 
-    public void linkLast(Task task) {
+    private void linkLast(Task task) {
         if (historyTable.containsKey(task.getId())) {
             removeNode(historyTable.get(task.getId()));
         }
-        Node<Task> exTail = tail;
+        final Node<Task> exTail = tail;
         Node<Task> newNode = new Node<Task>(task, tail, null);
         tail = newNode;
         historyTable.put(task.getId(), newNode);
@@ -71,7 +70,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     }
 
-    public List<Task> getTasks() {
+    private List<Task> getTasks() {
         List<Task> tasksList = new ArrayList<>();
         Node<Task> thisNode = head;
         while (thisNode != null) {
