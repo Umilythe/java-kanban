@@ -1,10 +1,11 @@
-package Manager;
+package manager;
 
-import Task.Task;
+import task.Task;
 
 import java.util.List;
 
 public interface HistoryManager {
+    void remove(int id);
 
     void add(Task task);
 
