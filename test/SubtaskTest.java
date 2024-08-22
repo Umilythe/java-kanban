@@ -1,5 +1,5 @@
-import Task.Status;
-import Task.Subtask;
+import task.Status;
+import task.Subtask;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

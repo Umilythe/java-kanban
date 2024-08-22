@@ -1,4 +1,4 @@
-package Task;
+package task;
 
 public class Subtask extends Task {
 
@@ -8,19 +8,22 @@ public class Subtask extends Task {
         super(title, description, id, status);
         this.epicId = epicId;
     }
+
     public Subtask(String title, String description, Status status, int epicId) {
         super(title, description, status);
         this.epicId = epicId;
     }
+
     public int getEpicId() {
         return epicId;
     }
+
     @Override
     public String toString() {
         String result = "Подзадача {" +
-                "title='" +super.getTitle() + '\'';
+                "title='" + super.getTitle() + '\'';
 
-        if(super.getDescription() != null) {
+        if (super.getDescription() != null) {
             result = result + ", description.length=" + super.getDescription().length();
         } else {
             result = result + ", description=null";
