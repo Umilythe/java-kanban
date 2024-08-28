@@ -19,13 +19,14 @@ public class InMemoryTaskManager implements TaskManager {
     public void putTask(Task task) {
         tasks.put(task.getId(), task);
     }
+
     public void putEpic(Epic epic) {
         epics.put(epic.getId(), epic);
     }
+
     public void putSubtask(Subtask subtask) {
         if (epics.containsKey(subtask.getEpicId())) {
             subtasks.put(subtask.getId(), subtask);
-
             Epic epic = epics.get(subtask.getEpicId());
             epic.setSubTasksIds(subtask.getId());
             changeEpicStatus(epic);
@@ -33,12 +34,11 @@ public class InMemoryTaskManager implements TaskManager {
             System.out.println("Эпика с таким id не существует");
         }
     }
-    public int getNextId() {
-        return nextId;
-    }
-    public void setNextId(int nextId){
+
+    public void setNextId(int nextId) {
         this.nextId = nextId;
     }
+
     @Override
     public void add(Task task) {
         task.setId(nextId);

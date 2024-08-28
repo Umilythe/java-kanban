@@ -104,12 +104,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         allKinds.addAll(allSubtasks);
         if (allKinds.contains(task)) {
             int max = 0;
-            for (Task sometask: allKinds) {
+            for (Task sometask : allKinds) {
                 if (sometask.getId() > max) {
                     max = sometask.getId();
                 }
             }
-            super.setNextId(max+1);
+            super.setNextId(max + 1);
         }
         super.add(task);
         save();
@@ -126,12 +126,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         allKinds.addAll(allSubtasks);
         if (allKinds.contains(epic)) {
             int max = 0;
-            for (Task sometask: allKinds) {
+            for (Task sometask : allKinds) {
                 if (sometask.getId() > max) {
                     max = sometask.getId();
                 }
             }
-            super.setNextId(max+1);
+            super.setNextId(max + 1);
         }
         super.add(epic);
         save();
@@ -148,12 +148,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         allKinds.addAll(allSubtasks);
         if (allKinds.contains(subtask)) {
             int max = 0;
-            for (Task sometask: allKinds) {
+            for (Task sometask : allKinds) {
                 if (sometask.getId() > max) {
                     max = sometask.getId();
                 }
             }
-            super.setNextId(max+1);
+            super.setNextId(max + 1);
         }
         super.add(subtask);
         save();
