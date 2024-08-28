@@ -11,6 +11,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -20,7 +21,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public void save() {
+    private void save() {
         try (FileWriter writer = new FileWriter(file.getName())) {
             writer.write("id,type,name,status,description,epic\n");
             ArrayList<Task> allKindsOfTasks = new ArrayList<>();
@@ -39,7 +40,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     }
 
-    public static Task fromString(String value) {
+    private static Task fromString(String value) {
         String[] characteristicsOfTask = value.split(",", 6);
         int id = Integer.parseInt(characteristicsOfTask[0]);
         Type type = Type.valueOf(characteristicsOfTask[1]);
@@ -47,14 +48,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         Status status = Status.valueOf(characteristicsOfTask[3]);
         String description = characteristicsOfTask[4];
         int epicId = 0;
-        if (!characteristicsOfTask[5].equals(" ")) {
+        if (type.equals(Type.SUBTASK)) {
             epicId = Integer.parseInt(characteristicsOfTask[5]);
         }
         switch (type) {
             case TASK:
                 return new Task(title, description, id, status);
             case EPIC:
-                return new Epic(title, description, id);
+                return new Epic(title, description, id, status);
             case SUBTASK:
                 return new Subtask(title, description, id, status, epicId);
             default:
@@ -75,13 +76,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = fromString(line);
                 switch (task.getType()) {
                     case TASK:
-                        fileBackedTaskManager.add(task);
+                        fileBackedTaskManager.putTask(task);
                         break;
                     case EPIC:
-                        fileBackedTaskManager.add((Epic) task);
+                        fileBackedTaskManager.putEpic((Epic) task);
                         break;
                     case SUBTASK:
-                        fileBackedTaskManager.add((Subtask) task);
+                        fileBackedTaskManager.putSubtask((Subtask) task);
                         break;
                 }
 
@@ -92,21 +93,68 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return fileBackedTaskManager;
     }
 
-
     @Override
     public void add(Task task) {
+        List<Task> allTasks = super.getAllTasks();
+        List<Epic> allEpics = super.getAllEpics();
+        List<Subtask> allSubtasks = super.getAllSubtasks();
+        List<Task> allKinds = new ArrayList<>();
+        allKinds.addAll(allTasks);
+        allKinds.addAll(allEpics);
+        allKinds.addAll(allSubtasks);
+        if (allKinds.contains(task)) {
+            int max = 0;
+            for (Task sometask: allKinds) {
+                if (sometask.getId() > max) {
+                    max = sometask.getId();
+                }
+            }
+            super.setNextId(max+1);
+        }
         super.add(task);
         save();
     }
 
     @Override
     public void add(Epic epic) {
+        List<Task> allTasks = super.getAllTasks();
+        List<Epic> allEpics = super.getAllEpics();
+        List<Subtask> allSubtasks = super.getAllSubtasks();
+        List<Task> allKinds = new ArrayList<>();
+        allKinds.addAll(allTasks);
+        allKinds.addAll(allEpics);
+        allKinds.addAll(allSubtasks);
+        if (allKinds.contains(epic)) {
+            int max = 0;
+            for (Task sometask: allKinds) {
+                if (sometask.getId() > max) {
+                    max = sometask.getId();
+                }
+            }
+            super.setNextId(max+1);
+        }
         super.add(epic);
         save();
     }
 
     @Override
     public void add(Subtask subtask) {
+        List<Task> allTasks = super.getAllTasks();
+        List<Epic> allEpics = super.getAllEpics();
+        List<Subtask> allSubtasks = super.getAllSubtasks();
+        List<Task> allKinds = new ArrayList<>();
+        allKinds.addAll(allTasks);
+        allKinds.addAll(allEpics);
+        allKinds.addAll(allSubtasks);
+        if (allKinds.contains(subtask)) {
+            int max = 0;
+            for (Task sometask: allKinds) {
+                if (sometask.getId() > max) {
+                    max = sometask.getId();
+                }
+            }
+            super.setNextId(max+1);
+        }
         super.add(subtask);
         save();
     }

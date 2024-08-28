@@ -23,6 +23,7 @@ public class FileBackedTaskManagerTest {
             fileBackedTaskManager.add(epic1);
             Subtask subtask1 = new Subtask("Test subtask", "And description", Status.NEW, epic1.getId());
             fileBackedTaskManager.add(subtask1);
+
             ArrayList<Task> tasksToFile = fileBackedTaskManager.getAllTasks();
             ArrayList<Epic> epicsToFile = fileBackedTaskManager.getAllEpics();
             ArrayList<Subtask> subtasksToFile = fileBackedTaskManager.getAllSubtasks();

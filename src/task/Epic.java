@@ -15,6 +15,10 @@ public class Epic extends Task {
         super(title, description, Status.NEW);
         this.type = Type.EPIC;
     }
+    public Epic(String title, String description, int id, Status status) {
+        super(title, description, id, status);
+        this.type = Type.EPIC;
+    }
 
     @Override
     public Type getType() {
