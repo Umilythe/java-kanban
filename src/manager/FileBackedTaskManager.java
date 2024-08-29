@@ -68,12 +68,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try {
             String fileContent = new String(Files.readString(Paths.get(file.getName())));
             String[] lines = fileContent.split("\n");
+            int max = 0;
             for (String line : lines) {
 
                 if (line.contains("id")) {
                     continue;
                 }
                 Task task = fromString(line);
+                if (task.getId() > max) {
+                    max = task.getId();
+                }
                 switch (task.getType()) {
                     case TASK:
                         fileBackedTaskManager.putTask(task);
@@ -87,6 +91,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
 
             }
+            fileBackedTaskManager.setNextId(max + 1);
         } catch (IOException e) {
             throw new ManagerSaveException("Не возможно прочитать файл.");
         }
@@ -95,66 +100,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public void add(Task task) {
-        List<Task> allTasks = super.getAllTasks();
-        List<Epic> allEpics = super.getAllEpics();
-        List<Subtask> allSubtasks = super.getAllSubtasks();
-        List<Task> allKinds = new ArrayList<>();
-        allKinds.addAll(allTasks);
-        allKinds.addAll(allEpics);
-        allKinds.addAll(allSubtasks);
-        if (allKinds.contains(task)) {
-            int max = 0;
-            for (Task sometask : allKinds) {
-                if (sometask.getId() > max) {
-                    max = sometask.getId();
-                }
-            }
-            super.setNextId(max + 1);
-        }
         super.add(task);
         save();
     }
 
     @Override
     public void add(Epic epic) {
-        List<Task> allTasks = super.getAllTasks();
-        List<Epic> allEpics = super.getAllEpics();
-        List<Subtask> allSubtasks = super.getAllSubtasks();
-        List<Task> allKinds = new ArrayList<>();
-        allKinds.addAll(allTasks);
-        allKinds.addAll(allEpics);
-        allKinds.addAll(allSubtasks);
-        if (allKinds.contains(epic)) {
-            int max = 0;
-            for (Task sometask : allKinds) {
-                if (sometask.getId() > max) {
-                    max = sometask.getId();
-                }
-            }
-            super.setNextId(max + 1);
-        }
         super.add(epic);
         save();
     }
 
     @Override
     public void add(Subtask subtask) {
-        List<Task> allTasks = super.getAllTasks();
-        List<Epic> allEpics = super.getAllEpics();
-        List<Subtask> allSubtasks = super.getAllSubtasks();
-        List<Task> allKinds = new ArrayList<>();
-        allKinds.addAll(allTasks);
-        allKinds.addAll(allEpics);
-        allKinds.addAll(allSubtasks);
-        if (allKinds.contains(subtask)) {
-            int max = 0;
-            for (Task sometask : allKinds) {
-                if (sometask.getId() > max) {
-                    max = sometask.getId();
-                }
-            }
-            super.setNextId(max + 1);
-        }
         super.add(subtask);
         save();
     }
