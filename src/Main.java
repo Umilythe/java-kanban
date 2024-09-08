@@ -8,7 +8,7 @@ public class Main {
 
         TaskManager taskManager = Managers.getDefault();
         System.out.println("Поехали!");
-        Task task1 = new Task("Уборка", "Влажная уборка комнат, разобрать шакаф", Status.NEW);
+        Task task1 = new Task("Уборка", "Влажная уборка комнат, разобрать шкаф", Status.NEW);
         taskManager.add(task1);
         Task task2 = new Task("Стирка", "Цветных вещей", Status.NEW);
         taskManager.add(task2);
@@ -50,6 +50,7 @@ public class Main {
         taskManager.getTaskById(task4.getId());
         taskManager.removeEpicById(epic1.getId());
         printAllTasks(taskManager);
+
     }
 
     private static void printAllTasks(TaskManager manager) {

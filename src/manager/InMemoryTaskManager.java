@@ -16,6 +16,28 @@ public class InMemoryTaskManager implements TaskManager {
     private Map<Integer, Subtask> subtasks = new HashMap<>();
     private HistoryManager historyManager = Managers.getDefaultHistory();
 
+    public void putTask(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
+    public void putEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    public void putSubtask(Subtask subtask) {
+        if (epics.containsKey(subtask.getEpicId())) {
+            subtasks.put(subtask.getId(), subtask);
+            Epic epic = epics.get(subtask.getEpicId());
+            epic.setSubTasksIds(subtask.getId());
+            changeEpicStatus(epic);
+        } else {
+            System.out.println("Эпика с таким id не существует");
+        }
+    }
+
+    public void setNextId(int nextId) {
+        this.nextId = nextId;
+    }
 
     @Override
     public void add(Task task) {
@@ -77,7 +99,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllTasks() {
-        for (Integer id: tasks.keySet()) {
+        for (Integer id : tasks.keySet()) {
             historyManager.remove(id);
         }
         tasks.clear();
@@ -85,11 +107,11 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllEpics() {
-        for (Integer id: epics.keySet()) {
+        for (Integer id : epics.keySet()) {
             historyManager.remove(id);
         }
         epics.clear();
-        for (Integer id: subtasks.keySet()) {
+        for (Integer id : subtasks.keySet()) {
             historyManager.remove(id);
         }
         subtasks.clear();
@@ -97,7 +119,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeAllSubtasks() {
-        for (Integer id: subtasks.keySet()) {
+        for (Integer id : subtasks.keySet()) {
             historyManager.remove(id);
         }
         subtasks.clear();

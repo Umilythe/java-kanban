@@ -8,18 +8,25 @@ public class Task {
     private String description;
     private int id;
     private Status status;
+    private Type type;
 
     public Task(String title, String description, int id, Status status) {
         this.title = title;
         this.description = description;
         this.id = id;
         this.status = status;
+        this.type = Type.TASK;
     }
 
     public Task(String title, String description, Status status) {
         this.title = title;
         this.description = description;
         this.status = status;
+        this.type = Type.TASK;
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public String getTitle() {
@@ -71,6 +78,11 @@ public class Task {
         }
 
         return result + ", status=" + status + '}';
+    }
+
+    public String toStringFromFile() {
+        String result = String.format("%s,%s,%s,%s,%s,%s\n", getId(), getType(), getTitle(), getStatus(), getDescription(), " ");
+        return result;
     }
 
     @Override
