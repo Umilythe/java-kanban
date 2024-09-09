@@ -195,6 +195,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void update(Task task) {
         if (task.getStartTime() != null) {
             if (checkTaskTimeIntersection(task)) {
+                Task oldTask = tasks.get(task.getId());
+                prioritizedTasks.remove(oldTask);
                 prioritizedTasks.add(task);
             } else {
                 throw new ManagerCheckTimeException("Задача пересекается по времени выполнения с уже существующими.");
@@ -214,6 +216,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void update(Subtask subtask) {
         if (subtask.getStartTime() != null) {
             if (checkTaskTimeIntersection(subtask)) {
+                Subtask oldSubtask = subtasks.get(subtask.getId());
+                prioritizedTasks.remove(oldSubtask);
                 prioritizedTasks.add(subtask);
             } else {
                 throw new ManagerCheckTimeException("Задача пересекается по времени выполнения с уже существующими.");
@@ -293,19 +297,21 @@ public class InMemoryTaskManager implements TaskManager {
     public void changeEpicTime(Epic epic) {
         List<Subtask> subtasksOfEpic = getSubtasksOfEpic(epic.getId());
         if (!subtasksOfEpic.isEmpty()) {
+            Duration epicDuration = Duration.ofSeconds(0);
             LocalDateTime veryBeggining = subtasksOfEpic.getFirst().getStartTime();
-            LocalDateTime veryEnd = subtasksOfEpic.getFirst().getEndTime();
             for (Subtask subtask : subtasksOfEpic) {
-                if (subtask.getStartTime().isBefore(veryBeggining)) {
+                if (veryBeggining == null) {
+                    veryBeggining = subtask.getStartTime();
+                } else if ((subtask.getStartTime() != null) && (subtask.getStartTime().isBefore(veryBeggining))) {
                     veryBeggining = subtask.getStartTime();
                 }
-                if (subtask.getEndTime().isAfter(veryEnd)) {
-                    veryEnd = subtask.getEndTime();
+                if (subtask.getDuration() != null) {
+                    epicDuration = epicDuration.plus(subtask.getDuration());
                 }
             }
             epic.setStartTime(veryBeggining);
-            epic.setEndTime(veryEnd);
-            epic.setDuration(Duration.between(epic.getStartTime(), epic.getEndTime()));
+            epic.setDuration(epicDuration);
+            epic.setEndTime(epic.getStartTime().plus(epic.getDuration()));
         } else {
             epic.setStartTime(null);
             epic.setEndTime(null);
@@ -319,23 +325,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     public boolean checkTaskTimeIntersection(Task task) {
         List<Task> existingTasks = getPrioritizedTasks();
-        int whenTimeIsNull = 0;
         if (!existingTasks.isEmpty()) {
-            for (Task existingTask : existingTasks) {
-                if ((existingTask.getStartTime() != null) && (existingTask.getEndTime() != null)) {
+                for (Task existingTask : existingTasks) {
                     if (task.getStartTime().isBefore(existingTask.getStartTime()) && task.getEndTime().isBefore(existingTask.getStartTime())) {
                         return true;
                     } else if (task.getStartTime().isAfter(existingTask.getEndTime())) {
                         return true;
+                    } else {
+                        return false;
                     }
-                } else {
-                    whenTimeIsNull++;
                 }
-            }
-            return whenTimeIsNull == existingTasks.size();
-        } else {
-            return true;
+
         }
+            return true;
     }
 
 
