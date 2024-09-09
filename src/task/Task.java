@@ -1,5 +1,7 @@
 package task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -9,6 +11,8 @@ public class Task {
     private int id;
     private Status status;
     private Type type;
+    private Duration duration;
+    private LocalDateTime startTime;
 
     public Task(String title, String description, int id, Status status) {
         this.title = title;
@@ -23,6 +27,46 @@ public class Task {
         this.description = description;
         this.status = status;
         this.type = Type.TASK;
+    }
+
+    public Task(String title, String description, int id, Status status, long durationInMinutes, LocalDateTime startTime) {
+        this.title = title;
+        this.description = description;
+        this.id = id;
+        this.status = status;
+        this.type = Type.TASK;
+        this.duration = Duration.ofMinutes(durationInMinutes);
+        this.startTime = startTime;
+    }
+
+    public Task(String title, String description, Status status, long durationInMinutes, LocalDateTime startTime) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.type = Type.TASK;
+        this.duration = Duration.ofMinutes(durationInMinutes);
+        this.startTime = startTime;
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        LocalDateTime endTime = startTime.plus(duration);
+        return endTime;
     }
 
     public Type getType() {
@@ -81,7 +125,12 @@ public class Task {
     }
 
     public String toStringFromFile() {
-        String result = String.format("%s,%s,%s,%s,%s,%s\n", getId(), getType(), getTitle(), getStatus(), getDescription(), " ");
+        String result;
+        if ((getStartTime() != null) && (getDuration() != null)) {
+            result = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", getId(), getType(), getTitle(), getStatus(), getDescription(), getDuration().toMinutes(), getStartTime(), " ");
+        } else {
+            result = String.format("%s,%s,%s,%s,%s,%s\n", getId(), getType(), getTitle(), getStatus(), getDescription(), " ");
+        }
         return result;
     }
 

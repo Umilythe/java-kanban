@@ -4,6 +4,8 @@ import task.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +20,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldAddTasksToHistory() {
-        Task task = new Task("Слушать подкаст", "По истории", Status.NEW);
+        Task task = new Task("Слушать подкаст", "По истории", Status.NEW, 10, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 15, 0));
         taskManager.add(task);
         taskManager.getTaskById(task.getId());
         final List<Task> history = taskManager.getHistory();
@@ -28,10 +30,10 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldNotReturnOldTasksVersions() {
-        Task task1 = new Task("Старая задача", "И описание у неё старое", Status.NEW);
+        Task task1 = new Task("Старая задача", "И описание у неё старое", Status.NEW, 10, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 15, 0));
         taskManager.add(task1);
         taskManager.getTaskById(task1.getId());
-        Task task2 = new Task("Новая задача", "И описание новое", task1.getId(), Status.IN_PROGRESS);
+        Task task2 = new Task("Новая задача", "И описание новое", task1.getId(), Status.IN_PROGRESS, 20, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 16, 0));
         taskManager.update(task2);
         taskManager.getTaskById(task2.getId());
         List<Task> tasks = taskManager.getHistory();
@@ -45,10 +47,10 @@ class InMemoryHistoryManagerTest {
         Epic epic = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic);
         taskManager.getEpicById(epic.getId());
-        Subtask subtask1 = new Subtask("First subtask of test epic", "Its description", Status.NEW, epic.getId());
+        Subtask subtask1 = new Subtask("First subtask of test epic", "Its description", Status.NEW, 15, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 15, 0), epic.getId());
         taskManager.add(subtask1);
         taskManager.getSubtaskById(subtask1.getId());
-        Task task1 = new Task("Test task", "And description", Status.NEW);
+        Task task1 = new Task("Test task", "And description", Status.NEW, 10, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 17, 0));
         taskManager.add(task1);
         taskManager.getTaskById(task1.getId());
 
@@ -62,13 +64,13 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldRemoveTask() {
-        Task task = new Task("Test task", "And description", Status.NEW);
+        Task task = new Task("Test task", "And description", Status.NEW, 10, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 15, 0));
         taskManager.add(task);
         taskManager.getTaskById(task.getId());
         Epic epic = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic);
         taskManager.getEpicById(epic.getId());
-        Subtask subtask = new Subtask("First subtask of test epic", "Its description", Status.NEW, epic.getId());
+        Subtask subtask = new Subtask("First subtask of test epic", "Its description", Status.NEW, 10, LocalDateTime.of(2024, Month.SEPTEMBER, 9, 15, 0), epic.getId());
         taskManager.add(subtask);
         taskManager.getSubtaskById(subtask.getId());
         List<Task> listBeforeRemoval = taskManager.getHistory();
@@ -83,13 +85,13 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldRemoveEpic() {
-        Task task = new Task("Test task", "And description", Status.NEW);
+        Task task = new Task("Test task", "And description", Status.NEW, 10, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 15, 0));
         taskManager.add(task);
         taskManager.getTaskById(task.getId());
         Epic epic = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic);
         taskManager.getEpicById(epic.getId());
-        Subtask subtask = new Subtask("First subtask of test epic", "Its description", Status.NEW, epic.getId());
+        Subtask subtask = new Subtask("First subtask of test epic", "Its description", Status.NEW, 25, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 10, 0), epic.getId());
         taskManager.add(subtask);
         taskManager.getSubtaskById(subtask.getId());
         List<Task> listBeforeRemoval = taskManager.getHistory();
@@ -104,13 +106,13 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void shouldRemoveSubtask() {
-        Task task = new Task("Test task", "And description", Status.NEW);
+        Task task = new Task("Test task", "And description", Status.NEW, 10, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 15, 0));
         taskManager.add(task);
         taskManager.getTaskById(task.getId());
         Epic epic = new Epic("Task.Task.Epic for test", "Its description");
         taskManager.add(epic);
         taskManager.getEpicById(epic.getId());
-        Subtask subtask = new Subtask("First subtask of test epic", "Its description", Status.NEW, epic.getId());
+        Subtask subtask = new Subtask("First subtask of test epic", "Its description", Status.NEW, 12, LocalDateTime.of(2024, Month.SEPTEMBER, 8, 7, 0), epic.getId());
         taskManager.add(subtask);
         taskManager.getSubtaskById(subtask.getId());
         List<Task> listBeforeRemoval = taskManager.getHistory();
