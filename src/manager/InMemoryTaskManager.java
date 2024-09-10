@@ -299,11 +299,17 @@ public class InMemoryTaskManager implements TaskManager {
         if (!subtasksOfEpic.isEmpty()) {
             Duration epicDuration = Duration.ofSeconds(0);
             LocalDateTime veryBeggining = subtasksOfEpic.getFirst().getStartTime();
+            LocalDateTime epicEndTime = subtasksOfEpic.getFirst().getEndTime();
             for (Subtask subtask : subtasksOfEpic) {
-                if (veryBeggining == null) {
-                    veryBeggining = subtask.getStartTime();
-                } else if ((subtask.getStartTime() != null) && (subtask.getStartTime().isBefore(veryBeggining))) {
-                    veryBeggining = subtask.getStartTime();
+                if (subtask.getStartTime() != null) {
+                    if ((veryBeggining == null) || (subtask.getStartTime().isBefore(veryBeggining))) {
+                        veryBeggining = subtask.getStartTime();
+                    }
+                }
+                if (subtask.getEndTime() != null) {
+                    if ((epicEndTime == null) || (subtask.getEndTime().isAfter(epicEndTime))) {
+                        epicEndTime = subtask.getEndTime();
+                    }
                 }
                 if (subtask.getDuration() != null) {
                     epicDuration = epicDuration.plus(subtask.getDuration());
@@ -311,7 +317,7 @@ public class InMemoryTaskManager implements TaskManager {
             }
             epic.setStartTime(veryBeggining);
             epic.setDuration(epicDuration);
-            epic.setEndTime(epic.getStartTime().plus(epic.getDuration()));
+            epic.setEndTime(epicEndTime);
         } else {
             epic.setStartTime(null);
             epic.setEndTime(null);
@@ -326,7 +332,8 @@ public class InMemoryTaskManager implements TaskManager {
     public boolean checkTaskTimeIntersection(Task task) {
         List<Task> existingTasks = getPrioritizedTasks();
         if (!existingTasks.isEmpty()) {
-                for (Task existingTask : existingTasks) {
+            for (Task existingTask : existingTasks) {
+                if (task.getId() != existingTask.getId()) {
                     if (task.getStartTime().isBefore(existingTask.getStartTime()) && task.getEndTime().isBefore(existingTask.getStartTime())) {
                         return true;
                     } else if (task.getStartTime().isAfter(existingTask.getEndTime())) {
@@ -335,9 +342,10 @@ public class InMemoryTaskManager implements TaskManager {
                         return false;
                     }
                 }
+            }
 
         }
-            return true;
+        return true;
     }
 
 
