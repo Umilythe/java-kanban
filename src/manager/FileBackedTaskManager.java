@@ -10,6 +10,7 @@ import task.Status;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
@@ -22,7 +23,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     private void save() {
         try (FileWriter writer = new FileWriter(file.getName())) {
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,duration,start time,epic\n");
             ArrayList<Task> allKindsOfTasks = new ArrayList<>();
             ArrayList<Task> allTasks = super.getAllTasks();
             ArrayList<Epic> allEpics = super.getAllEpics();
@@ -40,23 +41,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static Task fromString(String value) {
-        String[] characteristicsOfTask = value.split(",", 6);
+        String[] characteristicsOfTask = value.split(",", 8);
         int id = Integer.parseInt(characteristicsOfTask[0]);
         Type type = Type.valueOf(characteristicsOfTask[1]);
         String title = characteristicsOfTask[2];
         Status status = Status.valueOf(characteristicsOfTask[3]);
         String description = characteristicsOfTask[4];
+        long duration = Long.parseLong(characteristicsOfTask[5]);
+        LocalDateTime startTime = LocalDateTime.parse(characteristicsOfTask[6]);
         int epicId = 0;
         if (type.equals(Type.SUBTASK)) {
-            epicId = Integer.parseInt(characteristicsOfTask[5]);
+            epicId = Integer.parseInt(characteristicsOfTask[7]);
         }
         switch (type) {
             case TASK:
-                return new Task(title, description, id, status);
+                return new Task(title, description, id, status, duration, startTime);
             case EPIC:
-                return new Epic(title, description, id, status);
+                return new Epic(title, description, id, status, duration, startTime);
             case SUBTASK:
-                return new Subtask(title, description, id, status, epicId);
+                return new Subtask(title, description, id, status, duration, startTime, epicId);
             default:
                 return null;
         }
