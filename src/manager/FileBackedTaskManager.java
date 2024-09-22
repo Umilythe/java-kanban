@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
 
@@ -25,9 +26,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         try (FileWriter writer = new FileWriter(file.getName())) {
             writer.write("id,type,name,status,description,duration,start time,epic\n");
             ArrayList<Task> allKindsOfTasks = new ArrayList<>();
-            ArrayList<Task> allTasks = super.getAllTasks();
-            ArrayList<Epic> allEpics = super.getAllEpics();
-            ArrayList<Subtask> allSubTasks = super.getAllSubtasks();
+            List<Task> allTasks = super.getAllTasks();
+            List<Epic> allEpics = super.getAllEpics();
+            List<Subtask> allSubTasks = super.getAllSubtasks();
             allKindsOfTasks.addAll(allTasks);
             allKindsOfTasks.addAll(allEpics);
             allKindsOfTasks.addAll(allSubTasks);

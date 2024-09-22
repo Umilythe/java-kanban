@@ -1,11 +1,14 @@
 package task;
 
+import com.google.gson.annotations.Expose;
+
 import java.time.LocalDateTime;
 
 
 public class Subtask extends Task {
-
+    @Expose
     private final int epicId;
+    @Expose
     private Type type;
 
     public Subtask(String title, String description, int id, Status status, int epicId) {
@@ -58,8 +61,8 @@ public class Subtask extends Task {
     @Override
     public String toStringFromFile() {
         String result;
-        if ((getStartTime() != null) && (getDuration() != null)) {
-            result = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", getId(), getType(), getTitle(), getStatus(), getDescription(), getDuration().toMinutes(), getStartTime(), getEpicId());
+        if ((getStartTime() != null) && (getDuration() != 0)) {
+            result = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", getId(), getType(), getTitle(), getStatus(), getDescription(), getDuration(), getStartTime(), getEpicId());
         } else {
             result = String.format("%s,%s,%s,%s,%s,%s\n", getId(), getType(), getTitle(), getStatus(), getDescription(), getEpicId());
         }
