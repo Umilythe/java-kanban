@@ -302,20 +302,29 @@ public class InMemoryTaskManager implements TaskManager {
         int doneVariable = 0;
         int newVariable = 0;
         ArrayList<Integer> subtasksIds = epic.getSubTasksIds();
-        for (Integer id : subtasksIds) {
-            if (subtasks.get(id).getStatus() == Status.NEW) {
-                newVariable++;
+        if (subtasksIds.size() != 0) {
+            if ((subtasksIds.getFirst() == 0) && (subtasksIds.size() == 1)) {
+                subtasksIds.removeFirst();
+                epic.setStatus(Status.NEW);
+            } else {
+                for (Integer id : subtasksIds) {
+                    if (subtasks.get(id).getStatus() == Status.NEW) {
+                        newVariable++;
+                    }
+                    if (subtasks.get(id).getStatus() == Status.DONE) {
+                        doneVariable++;
+                    }
+                }
+                if (newVariable == subtasksIds.size()) {
+                    epic.setStatus(Status.NEW);
+                } else if (doneVariable == subtasksIds.size()) {
+                    epic.setStatus(Status.DONE);
+                } else {
+                    epic.setStatus(Status.IN_PROGRESS);
+                }
             }
-            if (subtasks.get(id).getStatus() == Status.DONE) {
-                doneVariable++;
-            }
-        }
-        if (newVariable == subtasksIds.size()) {
-            epic.setStatus(Status.NEW);
-        } else if (doneVariable == subtasksIds.size()) {
-            epic.setStatus(Status.DONE);
         } else {
-            epic.setStatus(Status.IN_PROGRESS);
+            epic.setStatus(Status.NEW);
         }
     }
 
@@ -372,8 +381,6 @@ public class InMemoryTaskManager implements TaskManager {
         }
         return true;
     }
-
-
 }
 
 

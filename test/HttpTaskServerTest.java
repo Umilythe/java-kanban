@@ -65,7 +65,7 @@ public class HttpTaskServerTest {
 
     @Test
     public void testAddEpic() throws IOException, InterruptedException {
-        Epic epic = new Epic("Epic for test", "Epic 1", 1, Status.NEW, 20, LocalDateTime.now());
+        Epic epic = new Epic("Epic for test", "Epic 1", 0, Status.NEW, 20, LocalDateTime.now());
 
         String epicJson = gson.toJson(epic);
 
@@ -88,7 +88,7 @@ public class HttpTaskServerTest {
     public void testAddSubtask() throws IOException, InterruptedException {
         Epic epic = new Epic("Epic for test", "Epic 1", 1, Status.NEW, 20, LocalDateTime.now());
         manager.add(epic);
-        Subtask subtask = new Subtask("Test 3", "Testing subtask 3", 2, Status.NEW, 5, LocalDateTime.now(), 1);
+        Subtask subtask = new Subtask("Test 3", "Testing subtask 3", 0, Status.NEW, 5, LocalDateTime.now(), 1);
 
         String subtaskJson = gson.toJson(subtask);
 

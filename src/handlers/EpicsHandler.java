@@ -34,7 +34,7 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
                 handleGetEpics(exchange, url);
                 break;
             case "POST":
-                handlePostEpics(exchange, url);
+                handlePostEpics(exchange);
                 break;
             case "DELETE":
                 handleDeleteEpics(exchange, url);
@@ -72,17 +72,28 @@ public class EpicsHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void handlePostEpics(HttpExchange exchange, String url) throws IOException {
+    public void handlePostEpics(HttpExchange exchange) throws IOException {
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Epic epic = gson.fromJson(body, Epic.class);
         try {
-            manager.add(epic);
-            writeResponse(exchange, "Epic has been successfully added.", 201);
+            if (epic.getId() == 0) {
+                manager.add(epic);
+                List<Epic> epics = manager.getAllEpics();
+                int requiredId = 0;
+                for (Epic epic1 : epics) {
+                    if (epic.equals(epic1)) {
+                        requiredId = epic1.getId();
+                    }
+                }
+                writeResponse(exchange, "Epic " + requiredId + " has been added.", 201);
+            } else {
+                manager.update(epic);
+                writeResponse(exchange, "Epic " + epic.getId() + " has been updated.", 201);
+            }
         } catch (ManagerCheckTimeException e) {
             writeResponse(exchange, "Not Acceptable", 406);
         }
-
     }
 
     public void handleDeleteEpics(HttpExchange exchange, String url) throws IOException {

@@ -32,7 +32,7 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
                 handleGetSubtasks(exchange, url);
                 break;
             case "POST":
-                handlePostSubtasks(exchange, url);
+                handlePostSubtasks(exchange);
                 break;
             case "DELETE":
                 handleDeleteSubtasks(exchange, url);
@@ -62,25 +62,27 @@ public class SubtasksHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void handlePostSubtasks(HttpExchange exchange, String url) throws IOException {
-        String[] urlParts = url.split("/");
+    public void handlePostSubtasks(HttpExchange exchange) throws IOException {
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Subtask subtask = gson.fromJson(body, Subtask.class);
-        if (urlParts.length == 2) {
-            try {
+        try {
+            if (subtask.getId() == 0) {
                 manager.add(subtask);
-                writeResponse(exchange, "Subtask has been successfully added.", 201);
-            } catch (ManagerCheckTimeException e) {
-                writeResponse(exchange, "Not Acceptable", 406);
-            }
-        } else if (urlParts.length == 3) {
-            try {
+                List<Subtask> subtasks = manager.getAllSubtasks();
+                int requiredId = 0;
+                for (Subtask subtask1 : subtasks) {
+                    if (subtask.equals(subtask1)) {
+                        requiredId = subtask1.getId();
+                    }
+                }
+                writeResponse(exchange, "Task " + requiredId + " has been successfully added.", 201);
+            } else {
                 manager.update(subtask);
-                writeResponse(exchange, "Subtask has been successfully updated.", 201);
-            } catch (ManagerCheckTimeException e) {
-                writeResponse(exchange, "Not Acceptable", 406);
+                writeResponse(exchange, "Task " + subtask.getId() + " has been successfully updated.", 201);
             }
+        } catch (ManagerCheckTimeException e) {
+            writeResponse(exchange, "Not Acceptable", 406);
         }
     }
 

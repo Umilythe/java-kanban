@@ -44,6 +44,11 @@ public class Epic extends Task {
     }
 
     public ArrayList<Integer> getSubTasksIds() {
+        if (subTasksIds == null) {
+            ArrayList<Integer> fakeIds = new ArrayList<>();
+            fakeIds.add(0);
+            return fakeIds;
+        }
         return new ArrayList<>(subTasksIds);
     }
 

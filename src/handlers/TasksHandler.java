@@ -32,7 +32,7 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
                 handleGetTasks(exchange, url);
                 break;
             case "POST":
-                handlePostTasks(exchange, url);
+                handlePostTasks(exchange);
                 break;
             case "DELETE":
                 handleDeleteTasks(exchange, url);
@@ -62,25 +62,27 @@ public class TasksHandler extends BaseHttpHandler implements HttpHandler {
         }
     }
 
-    public void handlePostTasks(HttpExchange exchange, String url) throws IOException {
-        String[] urlParts = url.split("/");
+    public void handlePostTasks(HttpExchange exchange) throws IOException {
         InputStream inputStream = exchange.getRequestBody();
         String body = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         Task task = gson.fromJson(body, Task.class);
-        if (urlParts.length == 2) {
-            try {
+        try {
+            if (task.getId() == 0) {
                 manager.add(task);
-                writeResponse(exchange, "Task has been successfully added.", 201);
-            } catch (ManagerCheckTimeException e) {
-                writeResponse(exchange, "Not Acceptable", 406);
-            }
-        } else if (urlParts.length == 3) {
-            try {
+                List<Task> tasks = manager.getAllTasks();
+                int requiredId = 0;
+                for (Task task1 : tasks) {
+                    if (task.equals(task1)) {
+                        requiredId = task1.getId();
+                    }
+                }
+                writeResponse(exchange, "Task " + requiredId + " has been successfully added.", 201);
+            } else {
                 manager.update(task);
-                writeResponse(exchange, "Task has been successfully updated.", 201);
-            } catch (ManagerCheckTimeException e) {
-                writeResponse(exchange, "Not Acceptable", 406);
+                writeResponse(exchange, "Task " + task.getId() + " has been successfully updated.", 201);
             }
+        } catch (ManagerCheckTimeException e) {
+            writeResponse(exchange, "Not Acceptable", 406);
         }
     }
 
