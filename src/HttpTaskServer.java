@@ -1,16 +1,45 @@
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sun.net.httpserver.HttpServer;
+import exeptions.NotFoundException;
+import handlers.*;
 import manager.Managers;
 import manager.TaskManager;
 import task.*;
 
-public class Main {
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.time.LocalDateTime;
+import java.time.Month;
 
-    public static void main(String[] args) {
+public class HttpTaskServer {
+    private static final int PORT = 8080;
+    private HttpServer httpServer;
 
+    public HttpTaskServer(TaskManager taskManager) throws IOException {
+        httpServer = HttpServer.create(new InetSocketAddress(PORT), 0);
+        httpServer.createContext("/tasks", new TasksHandler(taskManager));
+        httpServer.createContext("/subtasks", new SubtasksHandler(taskManager));
+        httpServer.createContext("/epics", new EpicsHandler(taskManager));
+        httpServer.createContext("/history", new HistoryHandler(taskManager));
+        httpServer.createContext("/prioritized", new PrioritizedTasksHandler(taskManager));
+    }
+
+    public void start() {
+        httpServer.start();
+    }
+
+    public void stop() {
+        httpServer.stop(1);
+    }
+
+    public static void main(String[] args) throws IOException {
         TaskManager taskManager = Managers.getDefault();
+        HttpTaskServer server = new HttpTaskServer(taskManager);
         System.out.println("Поехали!");
-        Task task1 = new Task("Уборка", "Влажная уборка комнат, разобрать шкаф", Status.NEW);
+        Task task1 = new Task("Уборка", "Влажная уборка комнат, разобрать шкаф", Status.NEW, 30, LocalDateTime.now());
         taskManager.add(task1);
-        Task task2 = new Task("Стирка", "Цветных вещей", Status.NEW);
+        Task task2 = new Task("Стирка", "Цветных вещей", Status.NEW, 80, LocalDateTime.of(2024, Month.MAY, 5, 10, 0));
         taskManager.add(task2);
         taskManager.getTaskById(task1.getId());
 
@@ -37,7 +66,11 @@ public class Main {
         taskManager.update(task4);
 
         taskManager.removeTaskById(task2.getId());
-        taskManager.getTaskById(2);
+        try {
+            taskManager.getTaskById(2);
+        } catch (NotFoundException e) {
+            System.out.println(e.getMessage());
+        }
         taskManager.getEpicById(3);
         taskManager.getEpicById(3);
         taskManager.getEpicById(6);
@@ -48,9 +81,13 @@ public class Main {
         taskManager.getTaskById(8);
         taskManager.getSubtaskById(9);
         taskManager.getTaskById(task4.getId());
-        taskManager.removeEpicById(epic1.getId());
+        //taskManager.removeEpicById(epic1.getId());
+        Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).serializeNulls().excludeFieldsWithoutExposeAnnotation().create();
+        System.out.println(gson.toJson(subtask2));
         printAllTasks(taskManager);
 
+        System.out.println("HTTP-сервер запущен на " + PORT + " порту!");
+        server.start();
     }
 
     private static void printAllTasks(TaskManager manager) {

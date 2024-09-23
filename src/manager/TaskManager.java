@@ -1,5 +1,6 @@
 package manager;
 
+import exeptions.NotFoundException;
 import task.Task;
 import task.Subtask;
 import task.Epic;
@@ -28,7 +29,7 @@ public interface TaskManager {
 
  void removeAllSubtasks();
 
- Task getTaskById(Integer taskId);
+ Task getTaskById(Integer taskId) throws NotFoundException;
 
  Epic getEpicById(Integer epicId);
 
@@ -47,5 +48,7 @@ public interface TaskManager {
  void removeSubtaskById(Integer subtaskId);
 
  List<Task> getHistory();
+
+ List<Task> getPrioritizedTasks();
 
 }

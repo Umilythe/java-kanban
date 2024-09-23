@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
+import java.util.List;
 
 public class FileBackedTaskManagerTest extends TaskManagerTest {
     @BeforeEach
@@ -37,14 +37,14 @@ public class FileBackedTaskManagerTest extends TaskManagerTest {
             Subtask subtask1 = new Subtask("Test subtask", "And description", Status.NEW, 10, LocalDateTime.of(2024, Month.SEPTEMBER, 9, 9, 0), epic1.getId());
             fileBackedTaskManager.add(subtask1);
 
-            ArrayList<Task> tasksToFile = fileBackedTaskManager.getAllTasks();
-            ArrayList<Epic> epicsToFile = fileBackedTaskManager.getAllEpics();
-            ArrayList<Subtask> subtasksToFile = fileBackedTaskManager.getAllSubtasks();
+            List<Task> tasksToFile = fileBackedTaskManager.getAllTasks();
+            List<Epic> epicsToFile = fileBackedTaskManager.getAllEpics();
+            List<Subtask> subtasksToFile = fileBackedTaskManager.getAllSubtasks();
 
             FileBackedTaskManager fBTaskManager = fileBackedTaskManager.loadFromFile(tmpFile);
-            ArrayList<Task> tasksFromFile = fBTaskManager.getAllTasks();
-            ArrayList<Epic> epicsFromFile = fBTaskManager.getAllEpics();
-            ArrayList<Subtask> subtasksFromFile = fBTaskManager.getAllSubtasks();
+            List<Task> tasksFromFile = fBTaskManager.getAllTasks();
+            List<Epic> epicsFromFile = fBTaskManager.getAllEpics();
+            List<Subtask> subtasksFromFile = fBTaskManager.getAllSubtasks();
 
             assertNotNull(tasksToFile, "Задачи не записались.");
             assertNotNull(epicsToFile, "Эпики не записались.");
